@@ -82,7 +82,7 @@
                             <li><strong>Select Line:</strong> Click on any lyric line to select it (it will be highlighted)</li>
                             <li><strong>Set Timing:</strong> Use AudioMass controls to navigate to the exact timing position</li>
                             <li><strong>Timestamp:</strong> Press 'T' to timestamp the selected line with current position + offset</li>
-                            <li><strong>Auto-advance:</strong> System automatically selects the next untimed line</li>
+                            <li><strong>Auto-advance:</strong> System automatically selects the next line (you can re-time already timed lines)</li>
                         </ol>
                         
                         <h4>Custom Offset:</h4>
@@ -264,6 +264,8 @@
             
             if (!this.currentLRC) return;
             
+            console.log('Displaying LRC lines:', this.currentLRC.length); // Debug log
+            
             var self = this;
             this.currentLRC.forEach(function(line, index) {
                 var lineElement = d.createElement('div');
@@ -297,6 +299,11 @@
                 
                 container.appendChild(lineElement);
             });
+            
+            // Debug: Check container dimensions
+            console.log('Container height:', container.offsetHeight);
+            console.log('Container scrollHeight:', container.scrollHeight);
+            console.log('Container overflow:', getComputedStyle(container).overflow);
         },
 
         selectLine: function(index) {
@@ -307,10 +314,61 @@
             this.selectedLineIndex = index;
             this.displayLRCLines();
             
-            // Scroll the selected line into view
-            var lineElement = d.querySelector(`[data-index="${index}"]`);
-            if (lineElement) {
-                lineElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            // Auto-scroll when halfway down visible area
+            this.autoScrollToLine(index);
+        },
+
+        autoScrollToLine: function(lineIndex) {
+            var container = d.getElementById('lrc-lines');
+            if (!container) return;
+            
+            var lineElement = d.querySelector(`[data-index="${lineIndex}"]`);
+            if (!lineElement) return;
+            
+            // Get container measurements
+            var containerHeight = container.clientHeight;
+            var containerScrollHeight = container.scrollHeight;
+            var currentScrollTop = container.scrollTop;
+            
+            // Get line position relative to container
+            var lineTop = lineElement.offsetTop;
+            var lineHeight = lineElement.offsetHeight;
+            
+            // Calculate the visible area boundaries
+            var visibleTop = currentScrollTop;
+            var visibleBottom = currentScrollTop + containerHeight;
+            
+            // Calculate 12% of the visible area
+            var twelvePercentPoint = visibleTop + (containerHeight * 0.001);
+            
+            console.log('Debug auto-scroll:', {
+                lineTop: lineTop,
+                currentScrollTop: currentScrollTop,
+                visibleTop: visibleTop,
+                visibleBottom: visibleBottom,
+                twelvePercentPoint: twelvePercentPoint,
+                containerHeight: containerHeight
+            });
+            
+            // Check if the line is below the 12% point of the visible area
+            if (lineTop >= twelvePercentPoint) {
+                // Calculate how much to scroll to position the line at the 12% point
+                var targetScrollTop = lineTop - (containerHeight * 0.001);
+                
+                // Ensure we don't scroll past the boundaries
+                var maxScrollTop = containerScrollHeight - containerHeight;
+                if (targetScrollTop > maxScrollTop) targetScrollTop = maxScrollTop;
+                if (targetScrollTop < 0) targetScrollTop = 0;
+                
+                console.log('Scrolling to:', targetScrollTop);
+                
+                // Only scroll if we need to move significantly
+                if (Math.abs(currentScrollTop - targetScrollTop) > 5) {
+                    container.scrollTo({
+                        top: targetScrollTop,
+                        behavior: 'smooth'
+                    });
+                }
             }
         },
 
@@ -380,22 +438,18 @@
         advanceToNextLine: function() {
             if (!this.currentLRC) return;
             
-            // Find next untimed line
+            // Find next line (regardless of timing status)
             var nextIndex = -1;
             for (var i = this.selectedLineIndex + 1; i < this.currentLRC.length; i++) {
-                if (!this.currentLRC[i].timestamp) {
-                    nextIndex = i;
-                    break;
-                }
+                nextIndex = i;
+                break;
             }
             
-            // If no next untimed line, look from the beginning
+            // If no next line, look from the beginning
             if (nextIndex === -1) {
                 for (var j = 0; j < this.selectedLineIndex; j++) {
-                    if (!this.currentLRC[j].timestamp) {
-                        nextIndex = j;
-                        break;
-                    }
+                    nextIndex = j;
+                    break;
                 }
             }
             
@@ -405,11 +459,8 @@
             this.updateStats();
             
             if (nextIndex !== -1) {
-                // Scroll the new selection into view
-                var lineElement = d.querySelector(`[data-index="${nextIndex}"]`);
-                if (lineElement) {
-                    lineElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }
+                // Auto-scroll to the new selection
+                this.autoScrollToLine(nextIndex);
             } else {
                 this.selectedLineIndex = -1;
                 this.displayLRCLines();

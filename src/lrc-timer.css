@@ -32,7 +32,7 @@
     top: 80px; /* Position below the button */
     right: 20px; /* Align with the button */
     width: 400px; /* Fixed width instead of full screen */
-    height: calc(100vh - 100px); /* Extend to bottom of screen */
+    height: calc(100vh - 120px); /* Ensure enough height for content */
     z-index: 10001;
     pointer-events: none; /* Allow clicks to pass through */
 }
@@ -226,14 +226,48 @@
     color: #ff9800;
 }
 
-.lrc-lines {
+.lrc-timer-display {
     flex: 1; /* Take remaining space */
-    overflow-y: auto;
-    border: 1px solid #444;
-    border-radius: 4px; /* Smaller radius */
-    background: #1a1a1a;
+    display: flex;
+    flex-direction: column;
     min-height: 0; /* Allow flex item to shrink */
-    max-height: 100%; /* Ensure it doesn't exceed container */
+}
+
+.lrc-lines {
+    height: 300px; /* Fixed height to ensure scrolling works */
+    overflow-y: scroll; /* Force scroll to always show */
+    border: 1px solid #444;
+    border-radius: 4px;
+    background: #1a1a1a;
+    flex-shrink: 0; /* Don't shrink */
+    position: relative; /* Ensure proper positioning */
+}
+
+/* Ensure scrollbar is always visible and styled */
+.lrc-lines::-webkit-scrollbar {
+    width: 12px; /* Make scrollbar more visible */
+    background: #1a1a1a;
+}
+
+.lrc-lines::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 6px;
+}
+
+.lrc-lines::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 6px;
+    border: 2px solid #1a1a1a;
+}
+
+.lrc-lines::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+/* For Firefox */
+.lrc-lines {
+    scrollbar-width: thin;
+    scrollbar-color: #666 #1a1a1a;
 }
 
 .lrc-line {
