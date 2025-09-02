@@ -2,6 +2,15 @@
 
 This fork adds a floating **LRC Timer** button to AudioMass, allowing you to easily time lyrics for `.lrc` files.
 
+## 🛠️ How to Build
+
+### Automatically
+- Windows: Launch build.bat
+- Linux: Launch build.sh
+
+### Manually
+- Navigate to [here](build-instructions.md)
+
 ## 🚀 How to Run
 
 ### 1. Start the server

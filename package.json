@@ -1,0 +1,51 @@
+{
+  "name": "lrc-audio-timing",
+  "version": "1.0.0",
+  "description": "LRC Timer for AudioMass - Desktop Application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build-win": "electron-builder --win",
+    "build-linux": "electron-builder --linux",
+    "dist": "npm run build"
+  },
+  "keywords": [
+    "audio",
+    "lrc",
+    "timer",
+    "lyrics",
+    "audiomass"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "build": {
+    "appId": "com.lrcaudiotiming.app",
+    "productName": "LRC Audio Timing",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "src/**/*",
+      "!src/audiomass-server.py",
+      "!src/audiomass-server.go"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "src/icon.png"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "src/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
