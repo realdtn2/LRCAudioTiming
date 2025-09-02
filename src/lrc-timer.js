@@ -249,7 +249,7 @@
             }
             
             this.currentLRC = lrcLines;
-            this.selectedLineIndex = -1; // Reset selection
+            this.selectedLineIndex = 0; // Auto-select first line
             this.displayLRCLines();
             this.updateStats();
             d.getElementById('export-lrc-btn').disabled = false;
