@@ -2,8 +2,6 @@
 
 This fork adds a floating **LRC Timer** button to AudioMass, allowing you to easily time lyrics for `.lrc` files.
 
----
-
 ## 🚀 How to Run
 
 ### 1. Start the server
@@ -16,8 +14,6 @@ python audiomass-server.py
 
 ### 2. Open the website
 - Navigate to [http://localhost:5055/](http://localhost:5055/)
-
----
 
 ## 🎵 How to Use
 
@@ -40,8 +36,6 @@ python audiomass-server.py
 - Once all lines are timed, click **Export Normal** for standard timings.
 - Or click **Export Starmaker** to accommodate the quirks of Starmaker.
 
----
-
 ## 📂 File Format
 
 ### Input (Untimed)
@@ -58,13 +52,9 @@ By no fault of anything but their heart full of holes, soaking with poison.
 [00:29.301] By no fault of anything but their heart full of holes, soaking with poison.
 ```
 
----
-
 ## 💡 Tips for Best Results
 - **Prepare Your Audio**: Use [Stemroller](https://github.com/stemrollerapp/stemroller) to isolate vocals, then use those vocals to time lyrics.
 - **Correct Timing**: Timestamp exactly when the lyric starts. A default -100 ms offset ensures you have enough time to sing.
-
----
 
 ## ⌨️ Keyboard Shortcuts
 - **T** → Timestamp the current untimed line with the current playback position.
