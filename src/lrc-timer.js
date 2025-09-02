@@ -264,7 +264,13 @@
             
             if (!this.currentLRC) return;
             
-            console.log('Displaying LRC lines:', this.currentLRC.length); // Debug log
+            console.log('Displaying LRC lines:', this.currentLRC.length);
+            
+            // Ensure container has proper styling
+            container.style.display = 'block';
+            container.style.overflowY = 'auto';
+            container.style.maxHeight = '300px';
+            container.style.position = 'relative';
             
             var self = this;
             this.currentLRC.forEach(function(line, index) {
@@ -284,6 +290,7 @@
                 var timestampSpan = d.createElement('span');
                 timestampSpan.className = 'lrc-timestamp';
                 timestampSpan.textContent = line.timestamp ? '[' + line.timestamp + '] ' : '[--:--.---] ';
+                timestampSpan.style.marginRight = '8px';
                 
                 var textSpan = d.createElement('span');
                 textSpan.className = 'lrc-text';
@@ -300,10 +307,20 @@
                 container.appendChild(lineElement);
             });
             
-            // Debug: Check container dimensions
-            console.log('Container height:', container.offsetHeight);
-            console.log('Container scrollHeight:', container.scrollHeight);
-            console.log('Container overflow:', getComputedStyle(container).overflow);
+            // Force a reflow to ensure proper rendering
+            setTimeout(function() {
+                void container.offsetHeight;
+                console.log('Container measurements after render:', {
+                    scrollHeight: container.scrollHeight,
+                    clientHeight: container.clientHeight,
+                    offsetHeight: container.offsetHeight
+                });
+                
+                // If a line is selected, scroll to it
+                if (self.selectedLineIndex !== -1) {
+                    self.autoScrollToLine(self.selectedLineIndex);
+                }
+            }, 50);
         },
 
         selectLine: function(index) {
@@ -322,54 +339,43 @@
             var container = d.getElementById('lrc-lines');
             if (!container) return;
             
-            var lineElement = d.querySelector(`[data-index="${lineIndex}"]`);
-            if (!lineElement) return;
+            var lineElement = d.querySelector(`.lrc-line[data-index="${lineIndex}"]`);
+            if (!lineElement) {
+                console.error('Line element not found for index:', lineIndex);
+                return;
+            }
             
-            // Get container measurements
-            var containerHeight = container.clientHeight;
-            var containerScrollHeight = container.scrollHeight;
-            var currentScrollTop = container.scrollTop;
+            console.log('Scrolling to line:', lineIndex, 'Text:', lineElement.textContent);
             
-            // Get line position relative to container
+            // First, ensure the container has content and proper dimensions
+            container.style.display = 'block';
+            container.style.overflowY = 'auto';
+            container.style.maxHeight = '300px';
+            
+            // Force a reflow to ensure proper rendering
+            void container.offsetHeight;
+            
+            // Calculate the scroll position manually
             var lineTop = lineElement.offsetTop;
             var lineHeight = lineElement.offsetHeight;
+            var containerHeight = container.clientHeight;
             
-            // Calculate the visible area boundaries
-            var visibleTop = currentScrollTop;
-            var visibleBottom = currentScrollTop + containerHeight;
+            // Calculate target position to center the line
+            var targetScrollTop = lineTop - (containerHeight / 2) + (lineHeight / 2);
             
-            // Calculate 12% of the visible area
-            var twelvePercentPoint = visibleTop + (containerHeight * 0.001);
+            // Apply boundaries
+            targetScrollTop = Math.max(0, Math.min(targetScrollTop, container.scrollHeight - containerHeight));
             
-            console.log('Debug auto-scroll:', {
+            console.log('Scroll details:', {
                 lineTop: lineTop,
-                currentScrollTop: currentScrollTop,
-                visibleTop: visibleTop,
-                visibleBottom: visibleBottom,
-                twelvePercentPoint: twelvePercentPoint,
-                containerHeight: containerHeight
+                lineHeight: lineHeight,
+                containerHeight: containerHeight,
+                containerScrollHeight: container.scrollHeight,
+                targetScrollTop: targetScrollTop
             });
             
-            // Check if the line is below the 12% point of the visible area
-            if (lineTop >= twelvePercentPoint) {
-                // Calculate how much to scroll to position the line at the 12% point
-                var targetScrollTop = lineTop - (containerHeight * 0.001);
-                
-                // Ensure we don't scroll past the boundaries
-                var maxScrollTop = containerScrollHeight - containerHeight;
-                if (targetScrollTop > maxScrollTop) targetScrollTop = maxScrollTop;
-                if (targetScrollTop < 0) targetScrollTop = 0;
-                
-                console.log('Scrolling to:', targetScrollTop);
-                
-                // Only scroll if we need to move significantly
-                if (Math.abs(currentScrollTop - targetScrollTop) > 5) {
-                    container.scrollTo({
-                        top: targetScrollTop,
-                        behavior: 'smooth'
-                    });
-                }
-            }
+            // Scroll immediately
+            container.scrollTop = targetScrollTop;
         },
 
         updateStats: function() {
