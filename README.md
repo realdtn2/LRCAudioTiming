@@ -1,24 +1,70 @@
-# AudioMass
-Free full-featured web-based audio &amp; waveform editing tool
+# LRC Timer for AudioMass
 
-
-Live: [https://audiomass.co](https://audiomass.co)
+This fork adds a floating **LRC Timer** button to AudioMass, allowing you to easily time lyrics for `.lrc` files.
 
 ---
 
-## Getting it to Run!
-1. please checkout this repo (or download it as zip)
-2. navigate to it through your favorite CLI, then access the ```src``` dir
-3. Run ```go run audiomass-server.go```  -  or if you do not have golang installed, you can use a simple python webserver by running ```python audiomass-server.py```
-4. Navigate to [http://localhost:5055/](http://localhost:5055/) and have fun!
+## 🚀 How to Run
 
-...
+### 1. Start the server
+```
+git clone https://github.com/realdtn2/LRCAudioTiming
+cd LRCAudioTiming
+cd src
+python audiomass-server.py
+```
 
-
+### 2. Open the website
+- Navigate to [http://localhost:5055/](http://localhost:5055/)
 
 ---
 
-If you want to build the all.build.js minified file for delivery/publishing this then you can use uglify and run as:
-```cat dist/wavesurfer.js dist/plugin/wavesurfer.regions.js oneup.js app.js keys.js contextmenu.js ui-fx.js ui.js modal.js state.js engine.js actions.js drag.js recorder.js welcome.js fx-pg-eq.js fx-auto.js local.js id3.js lzma.js | uglifyjs -c -m -o all.build.js```
+## 🎵 How to Use
 
-Thanks!
+### 1. Access the LRC Timer
+- Click the floating ⏱️ button in the top-right corner of the screen.
+- The LRC Timer modal will open.
+
+### 2. Load an LRC File
+- Click **Load LRC File**.
+- Select an untimed LRC file (`.lrc` or `.txt`).
+- The file will be parsed and displayed with all lyric lines.
+
+### 3. Time the Lyrics
+- Navigate to the point in the song where a lyric should appear.
+- Play the song so that your playback position matches the lyric start.
+- Press **T** to timestamp that line with the current playback position.
+- The timestamp will appear in `[MM:SS.mmm]` format.
+
+### 4. Export the Timed LRC
+- Once all lines are timed, click **Export Normal** for standard timings.
+- Or click **Export Starmaker** to accommodate the quirks of Starmaker.
+
+---
+
+## 📂 File Format
+
+### Input (Untimed)
+```text
+Glimmering beyond the landscape of Hell shines a thread, silver and narrow.
+Emptily promising Heaven — the one who grabbed it plummeted down.
+By no fault of anything but their heart full of holes, soaking with poison.
+```
+
+### Output (Timed)
+```text
+[00:16.159] Glimmering beyond the landscape of Hell shines a thread, silver and narrow.
+[00:22.755] Emptily promising Heaven — the one who grabbed it plummeted down.
+[00:29.301] By no fault of anything but their heart full of holes, soaking with poison.
+```
+
+---
+
+## 💡 Tips for Best Results
+- **Prepare Your Audio**: Use [Stemroller](https://github.com/stemrollerapp/stemroller) to isolate vocals, then use those vocals to time lyrics.
+- **Correct Timing**: Timestamp exactly when the lyric starts. A default -100 ms offset ensures you have enough time to sing.
+
+---
+
+## ⌨️ Keyboard Shortcuts
+- **T** → Timestamp the current untimed line with the current playback position.

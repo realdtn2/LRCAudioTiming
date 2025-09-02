@@ -1,0 +1,430 @@
+/* LRC Timer Floating Button */
+.lrc-timer-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: #333;
+    border: 2px solid #666;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10000;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.lrc-timer-button:hover {
+    background: #555;
+    border-color: #888;
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* LRC Timer Modal - positioned on the right, non-blocking, extends to bottom */
+.lrc-timer-modal {
+    position: fixed;
+    top: 80px; /* Position below the button */
+    right: 20px; /* Align with the button */
+    width: 400px; /* Fixed width instead of full screen */
+    height: calc(100vh - 100px); /* Extend to bottom of screen */
+    z-index: 10001;
+    pointer-events: none; /* Allow clicks to pass through */
+}
+
+.lrc-timer-content {
+    background: #222;
+    border: 2px solid #666;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    pointer-events: auto; /* Re-enable pointer events for the content */
+    display: flex;
+    flex-direction: column;
+}
+
+.lrc-timer-header {
+    background: #333;
+    padding: 10px 15px; /* Reduced padding */
+    border-bottom: 1px solid #666;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0; /* Don't shrink */
+}
+
+.lrc-timer-header h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 16px; /* Smaller font */
+}
+
+.lrc-timer-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px; /* Smaller close button */
+    cursor: pointer;
+    padding: 0;
+    width: 25px; /* Smaller size */
+    height: 25px; /* Smaller size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.lrc-timer-close:hover {
+    background: #555;
+}
+
+.lrc-timer-body {
+    padding: 15px; /* Reduced padding */
+    flex: 1; /* Take remaining space */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.lrc-timer-controls {
+    margin-bottom: 15px; /* Reduced margin */
+    display: flex;
+    gap: 6px; /* Reduced gap to fit 4 buttons */
+    flex-wrap: wrap;
+    flex-shrink: 0; /* Don't shrink */
+}
+
+.lrc-btn {
+    background: #444;
+    border: 1px solid #666;
+    color: #fff;
+    padding: 6px 8px; /* Smaller padding to fit 4 buttons */
+    border-radius: 4px; /* Smaller radius */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 11px; /* Smaller font to fit 4 buttons */
+    flex: 1; /* Make buttons equal width */
+    min-width: 0; /* Allow shrinking */
+}
+
+.lrc-btn:hover:not(:disabled) {
+    background: #555;
+    border-color: #888;
+}
+
+.lrc-btn:disabled {
+    background: #333;
+    border-color: #444;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.lrc-timer-offset {
+    background: #333;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #666;
+    flex-shrink: 0; /* Don't shrink */
+}
+
+.lrc-timer-offset label {
+    color: #fff;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.lrc-timer-offset input {
+    background: #444;
+    border: 1px solid #666;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    width: 80px;
+    text-align: center;
+}
+
+.lrc-timer-offset input:focus {
+    outline: none;
+    border-color: #2196F3;
+}
+
+.lrc-help-btn {
+    background: #2196F3;
+    border: 1px solid #1976D2;
+    color: #fff;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.lrc-help-btn:hover {
+    background: #1976D2;
+    transform: scale(1.1);
+}
+
+.current-time {
+    background: #333;
+    padding: 10px 15px; /* Reduced padding */
+    border-radius: 4px; /* Smaller radius */
+    margin-bottom: 15px; /* Reduced margin */
+    text-align: center;
+    font-size: 14px; /* Smaller font */
+    color: #fff;
+    border: 1px solid #666;
+    flex-shrink: 0; /* Don't shrink */
+}
+
+.current-time span {
+    font-weight: bold;
+    color: #4CAF50;
+    font-family: monospace;
+    font-size: 16px; /* Smaller font */
+}
+
+.lrc-info {
+    background: #333;
+    padding: 8px 12px; /* Reduced padding */
+    border-radius: 4px; /* Smaller radius */
+    margin-bottom: 15px; /* Reduced margin */
+    text-align: center;
+    border: 1px solid #666;
+    flex-shrink: 0; /* Don't shrink */
+}
+
+.lrc-stats {
+    font-size: 12px; /* Smaller font */
+    color: #fff;
+}
+
+.lrc-stats-complete {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.lrc-stats-incomplete {
+    color: #ff9800;
+}
+
+.lrc-lines {
+    flex: 1; /* Take remaining space */
+    overflow-y: auto;
+    border: 1px solid #444;
+    border-radius: 4px; /* Smaller radius */
+    background: #1a1a1a;
+}
+
+.lrc-line {
+    padding: 8px 12px; /* Reduced padding */
+    border-bottom: 1px solid #333;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Reduced gap */
+    transition: all 0.3s ease;
+    cursor: pointer; /* Make lines clickable */
+}
+
+.lrc-line:hover {
+    background: #2a2a2a;
+}
+
+.lrc-line:last-child {
+    border-bottom: none;
+}
+
+.lrc-line.lrc-line-timed {
+    background: rgba(76, 175, 80, 0.1); /* Subtle green background for timed lines */
+}
+
+.lrc-line.lrc-line-selected {
+    background: rgba(33, 150, 243, 0.3); /* Blue background for selected line */
+    border-left: 3px solid #2196F3; /* Blue left border for selected line */
+    padding-left: 9px; /* Adjust padding to account for border */
+}
+
+.lrc-line.lrc-line-selected.lrc-line-timed {
+    background: rgba(76, 175, 80, 0.2); /* Slightly stronger green for selected timed lines */
+    border-left: 3px solid #4CAF50; /* Green border for selected timed lines */
+}
+
+.lrc-timestamp {
+    font-family: monospace;
+    font-size: 12px; /* Smaller font */
+    color: #4CAF50;
+    min-width: 70px; /* Reduced width */
+    text-align: center;
+}
+
+.lrc-text {
+    flex: 1;
+    color: #fff;
+    font-size: 13px; /* Smaller font */
+}
+
+/* Help Modal */
+.lrc-help-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 10003;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lrc-help-content {
+    background: #222;
+    border: 2px solid #666;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.lrc-help-header {
+    background: #333;
+    padding: 15px 20px;
+    border-bottom: 1px solid #666;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.lrc-help-header h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 18px;
+}
+
+.lrc-help-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.lrc-help-close:hover {
+    background: #555;
+}
+
+.lrc-help-body {
+    padding: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+    color: #fff;
+}
+
+.lrc-help-body h4 {
+    color: #4CAF50;
+    margin: 20px 0 10px 0;
+    border-bottom: 1px solid #444;
+    padding-bottom: 5px;
+}
+
+.lrc-help-body p {
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+.lrc-help-body ol, .lrc-help-body ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.lrc-help-body li {
+    margin: 8px 0;
+    line-height: 1.5;
+}
+
+.lrc-help-body strong {
+    color: #2196F3;
+}
+
+/* Scrollbar styling */
+.lrc-lines::-webkit-scrollbar,
+.lrc-help-body::-webkit-scrollbar {
+    width: 6px; /* Smaller scrollbar */
+}
+
+.lrc-lines::-webkit-scrollbar-track,
+.lrc-help-body::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+.lrc-lines::-webkit-scrollbar-thumb,
+.lrc-help-body::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 3px;
+}
+
+.lrc-lines::-webkit-scrollbar-thumb:hover,
+.lrc-help-body::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .lrc-timer-modal {
+        right: 10px;
+        width: calc(100vw - 20px);
+        max-width: 400px;
+    }
+    
+    .lrc-timer-controls {
+        flex-direction: column;
+    }
+    
+    .lrc-btn {
+        width: 100%;
+    }
+    
+    .lrc-line {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .lrc-timestamp {
+        min-width: auto;
+    }
+    
+    .lrc-timer-offset {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
