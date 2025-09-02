@@ -91,7 +91,7 @@
     flex: 1; /* Take remaining space */
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: visible; /* Allow overflow for scrolling */
 }
 
 .lrc-timer-controls {
@@ -232,6 +232,8 @@
     border: 1px solid #444;
     border-radius: 4px; /* Smaller radius */
     background: #1a1a1a;
+    min-height: 0; /* Allow flex item to shrink */
+    max-height: 100%; /* Ensure it doesn't exceed container */
 }
 
 .lrc-line {
