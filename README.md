@@ -3,9 +3,9 @@
 This fork adds a floating **LRC Timer** button to AudioMass, allowing you to easily time lyrics for `.lrc` files.
 
 ## 🎤 Website
+- [LRCAudioTiming](https://realdtn2.github.io/LRCAudioTiming)
 
 ## 🛠️ How to Build
-- Located [here](https://realdtn2.github.io/LRCAudioTiming)
 
 ### Automatically
 - Windows: Launch build.bat
