@@ -2530,7 +2530,8 @@
 		if (is_chrome)
 		{
 			timing.appendChild( pk_timingcnv );
-			pk_timingctx.fillStyle = "#000";
+			// Use a more visible background color
+			pk_timingctx.fillStyle = "#1a1a1a";
 			pk_timingctx.fillRect(0, 0, 150, 40);
 
 			for (var ii = 0; ii < 11; ++ii)
@@ -2541,10 +2542,17 @@
 				var curr_ctx = curr_cache.getContext('2d', {alpha:false});
 				curr_ctx.font = "29px Helvetica, Arial, sans-serif";
 				curr_ctx.textAlign = "center";
-				curr_ctx.fillStyle = "#000";
+				// Use a more visible background
+				curr_ctx.fillStyle = "#1a1a1a";
 				curr_ctx.fillRect(0, 0, 18, 26);
-				curr_ctx.fillStyle = "#fff";
+				// Use a more visible text color
+				curr_ctx.fillStyle = "#ffffff";
 				curr_ctx.textBaseline = 'middle';
+				// Add text shadow for better visibility
+				curr_ctx.shadowColor = "#000000";
+				curr_ctx.shadowBlur = 1;
+				curr_ctx.shadowOffsetX = 1;
+				curr_ctx.shadowOffsetY = 1;
 
 				if (ii === 10) {
 					curr_ctx.fillText (':', 8, 14);
