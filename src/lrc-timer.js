@@ -127,10 +127,24 @@
                 d.getElementById('lrc-file-input').click();
             });
             
+            // Helper: validate file extension
+            var isValidLrcFile = function(file){
+                if (!file) return false;
+                var name = (file.name || '').toLowerCase();
+                return name.endsWith('.lrc') || name.endsWith('.txt');
+            };
+            
             // File input change
             d.getElementById('lrc-file-input').addEventListener('change', function(e) {
                 if (e.target.files.length > 0) {
-                    self.loadLRCFile(e.target.files[0]);
+                    var f = e.target.files[0];
+                    if (!isValidLrcFile(f)) {
+                        self.showMessage('Invalid file. Please select an .lrc or .txt file.', 'error');
+                        // reset input so the same file can be re-picked after renaming
+                        e.target.value = '';
+                        return;
+                    }
+                    self.loadLRCFile(f);
                 }
             });
             
@@ -172,6 +186,28 @@
                     self.timestampSelectedLine();
                 }
             });
+
+            // Drag-and-drop support for LRC files (global)
+            d.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+            d.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (!e.dataTransfer || !e.dataTransfer.files || e.dataTransfer.files.length === 0) return;
+
+                var files = Array.prototype.slice.call(e.dataTransfer.files);
+                // prefer first valid LRC/TXT
+                var lrcFile = files.find(function(f){ return isValidLrcFile(f); });
+
+                if (lrcFile) {
+                    self.loadLRCFile(lrcFile);
+                } else {
+                    self.showMessage('Invalid file. Please drop an .lrc or .txt file.', 'error');
+                }
+            });
             
             // Update current time display
             this.startTimeUpdate();
@@ -192,6 +228,8 @@
             this.isVisible = true;
             d.getElementById('lrc-timer-modal').style.display = 'block';
             this.updateTimeDisplay();
+            // Ensure the lyrics area renders its current state (hint or lines)
+            this.displayLRCLines();
         },
 
         hideModal: function() {
@@ -276,7 +314,23 @@
             var container = d.getElementById('lrc-lines');
             container.innerHTML = '';
             
-            if (!this.currentLRC) return;
+            // Show hint when there is no LRC loaded yet
+            if (!this.currentLRC) {
+                // Center the hint in the middle
+                container.style.display = 'flex';
+                container.style.alignItems = 'center';
+                container.style.justifyContent = 'center';
+                container.style.minHeight = '260px';
+                container.style.position = 'relative';
+                container.style.overflow = 'hidden';
+
+                var hint = d.createElement('div');
+                hint.className = 'lrc-lines-empty-hint';
+                hint.textContent = 'Drag n drop an LRC file in this window to load the lyrics';
+                hint.style.cssText = 'max-width: 420px; padding:10px 12px; color:#ccc; border:1px dashed #666; border-radius:6px; background:#1a1a1a; text-align:center; box-shadow:0 1px 6px rgba(0,0,0,0.25); font-size:13px;';
+                container.appendChild(hint);
+                return;
+            }
             
             console.log('Displaying LRC lines:', this.currentLRC.length);
             
