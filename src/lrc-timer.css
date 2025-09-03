@@ -32,7 +32,8 @@
     top: 80px; /* Position below the button */
     right: 20px; /* Align with the button */
     width: 400px; /* Fixed width instead of full screen */
-    height: calc(100vh - 120px); /* Ensure enough height for content */
+    height: auto; /* Auto-size to content */
+    max-height: calc(100vh - 120px); /* Prevent overflow off-screen */
     z-index: 10001;
     pointer-events: none; /* Allow clicks to pass through */
 }
@@ -42,7 +43,8 @@
     border: 2px solid #666;
     border-radius: 10px;
     width: 100%;
-    height: 100%;
+    height: auto; /* Auto-size content */
+    max-height: 100%;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     pointer-events: auto; /* Re-enable pointer events for the content */
@@ -88,7 +90,7 @@
 
 .lrc-timer-body {
     padding: 15px; /* Reduced padding */
-    flex: 1; /* Take remaining space */
+    flex: 0 1 auto; /* Do not force-fill remaining height */
     display: flex;
     flex-direction: column;
     overflow: visible; /* Allow overflow for scrolling */
@@ -227,10 +229,10 @@
 }
 
 .lrc-timer-display {
-    flex: 1; /* Take remaining space */
     display: flex;
     flex-direction: column;
     min-height: 0; /* Allow flex item to shrink */
+    flex: 0 1 auto; /* Do not force-fill remaining height */
 }
 
 .lrc-lines {
