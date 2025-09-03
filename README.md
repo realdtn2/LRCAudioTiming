@@ -2,7 +2,10 @@
 
 This fork adds a floating **LRC Timer** button to AudioMass, allowing you to easily time lyrics for `.lrc` files.
 
+## 🎤 Website
+
 ## 🛠️ How to Build
+- [LRCAudioTiming](https://realdtn2.github.io/LRCAudioTiming)
 
 ### Automatically
 - Windows: Launch build.bat
@@ -47,14 +50,14 @@ python audiomass-server.py
 
 ## 📂 File Format
 
-### Input
+### Input (.txt/.lrc)
 ```text
 Glimmering beyond the landscape of Hell shines a thread, silver and narrow.
 Emptily promising Heaven — the one who grabbed it plummeted down.
 By no fault of anything but their heart full of holes, soaking with poison.
 ```
 
-### Output
+### Output (.lrc)
 ```text
 [00:16.159] Glimmering beyond the landscape of Hell shines a thread, silver and narrow.
 [00:22.755] Emptily promising Heaven — the one who grabbed it plummeted down.
