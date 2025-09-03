@@ -5,7 +5,7 @@ This fork adds a floating **LRC Timer** button to AudioMass, allowing you to eas
 ## 🎤 Website
 - [LRCAudioTiming](https://realdtn2.github.io/LRCAudioTiming)
 
-## 🛠️ How to Build
+## 🛠️ How to Build (Electron)
 
 ### Automatically
 - Windows: Launch build.bat
