@@ -32,7 +32,7 @@ python audiomass-server.py
 
 ### 2. Load an LRC File
 - Click **Load LRC File**.
-- Select an untimed LRC file (`.lrc` or `.txt`).
+- Select an LRC file (`.lrc` or `.txt`).
 - The file will be parsed and displayed with all lyric lines.
 
 ### 3. Time the Lyrics
@@ -41,20 +41,20 @@ python audiomass-server.py
 - Press **T** to timestamp that line with the current playback position.
 - The timestamp will appear in `[MM:SS.mmm]` format.
 
-### 4. Export the Timed LRC
-- Once all lines are timed, click **Export Normal** for standard timings.
+### 4. Export the LRC
+- Click **Export LRC** for standard format.
 - Or click **Export Starmaker** to accommodate the quirks of Starmaker.
 
 ## 📂 File Format
 
-### Input (Untimed)
+### Input
 ```text
 Glimmering beyond the landscape of Hell shines a thread, silver and narrow.
 Emptily promising Heaven — the one who grabbed it plummeted down.
 By no fault of anything but their heart full of holes, soaking with poison.
 ```
 
-### Output (Timed)
+### Output
 ```text
 [00:16.159] Glimmering beyond the landscape of Hell shines a thread, silver and narrow.
 [00:22.755] Emptily promising Heaven — the one who grabbed it plummeted down.
@@ -66,4 +66,4 @@ By no fault of anything but their heart full of holes, soaking with poison.
 - **Correct Timing**: Timestamp exactly when the lyric starts. A default -100 ms offset ensures you have enough time to sing.
 
 ## ⌨️ Keyboard Shortcuts
-- **T** → Timestamp the current untimed line with the current playback position.
+- **T** → Timestamp the current line with the current playback position.

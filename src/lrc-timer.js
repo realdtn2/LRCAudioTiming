@@ -40,7 +40,7 @@
                         <div class="lrc-timer-controls">
                             <input type="file" id="lrc-file-input" accept=".lrc,.txt" style="display: none;">
                             <button id="load-lrc-btn" class="lrc-btn">Load LRC File</button>
-                            <button id="export-lrc-btn" class="lrc-btn" disabled>Export Normal</button>
+                            <button id="export-lrc-btn" class="lrc-btn" disabled>Export LRC</button>
                             <button id="export-starmaker-btn" class="lrc-btn" disabled>Export Starmaker</button>
                             <button id="clear-lrc-btn" class="lrc-btn" disabled>Clear</button>
                         </div>
@@ -78,11 +78,11 @@
                     <div class="lrc-help-body">
                         <h4>How to Use:</h4>
                         <ol>
-                            <li><strong>Load LRC File:</strong> Click to select an untimed LRC file (.lrc or .txt)</li>
+                            <li><strong>Load LRC File:</strong> Click to select an LRC file (.lrc or .txt)</li>
                             <li><strong>Select Line:</strong> Click on any lyric line to select it (it will be highlighted)</li>
                             <li><strong>Set Timing:</strong> Use AudioMass controls to navigate to the exact timing position</li>
                             <li><strong>Timestamp:</strong> Press 'T' to timestamp the selected line with current position + offset</li>
-                            <li><strong>Auto-advance:</strong> System automatically selects the next line (you can re-time already timed lines)</li>
+                            <li><strong>Auto-advance:</strong> System automatically selects the next line</li>
                         </ol>
                         
                         <h4>Custom Offset:</h4>
@@ -94,7 +94,7 @@
                         
                         <h4>Export Options:</h4>
                         <ul>
-                            <li><strong>Export Normal:</strong> Standard LRC format with timestamps</li>
+                            <li><strong>Export LRC:</strong> Standard LRC format with timestamps</li>
                             <li><strong>Export Starmaker:</strong> Adds +260ms to all lines except the first line, needed due to a quirk of Starmaker</li>
                         </ul>
                         
@@ -231,13 +231,25 @@
             lines.forEach(function(line, index) {
                 line = line.trim();
                 if (line) {
-                    // Remove existing timestamps if present
-                    var cleanLine = line.replace(/\[\d{2}:\d{2}\.\d{2,3}\]/g, '').trim();
+                    // Check if line has existing timestamp
+                    var timestampMatch = line.match(/^\[(\d{2}:\d{2}\.\d{2,3})\]/);
+                    var timestamp = null;
+                    var cleanLine = line;
+                    
+                    if (timestampMatch) {
+                        // Line has existing timestamp
+                        timestamp = timestampMatch[1];
+                        cleanLine = line.replace(/^\[\d{2}:\d{2}\.\d{2,3}\]\s*/, '').trim();
+                    } else {
+                        // Line has no timestamp - remove any timestamps that might be in the middle
+                        cleanLine = line.replace(/\[\d{2}:\d{2}\.\d{2,3}\]/g, '').trim();
+                    }
+                    
                     if (cleanLine) {
                         lrcLines.push({
                             index: index,
                             text: cleanLine,
-                            timestamp: null,
+                            timestamp: timestamp,
                             original: line
                         });
                     }
@@ -256,6 +268,8 @@
             d.getElementById('export-starmaker-btn').disabled = false;
             d.getElementById('clear-lrc-btn').disabled = false;
             d.getElementById('lrc-info').style.display = 'block';
+            
+
         },
 
         displayLRCLines: function() {
@@ -278,9 +292,6 @@
                 lineElement.className = 'lrc-line';
                 
                 // Add appropriate classes
-                if (line.timestamp) {
-                    lineElement.classList.add('lrc-line-timed');
-                }
                 if (index === self.selectedLineIndex) {
                     lineElement.classList.add('lrc-line-selected');
                 }
@@ -387,7 +398,7 @@
             }).length;
             
             var statsElement = d.getElementById('lrc-stats');
-            statsElement.textContent = 'Lines: ' + timed + '/' + total + ' timed';
+            statsElement.textContent = 'Lines: ' + total + ' total, ' + timed + ' with timestamps';
             statsElement.className = timed === total ? 'lrc-stats-complete' : 'lrc-stats-incomplete';
         },
 
@@ -526,7 +537,7 @@
                 }
             }.bind(this));
             
-            var filename = type === 'starmaker' ? 'timed_lyrics_starmaker.lrc' : 'timed_lyrics.lrc';
+            var filename = type === 'starmaker' ? 'lyrics_starmaker.lrc' : 'lyrics.lrc';
             
             var blob = new Blob([content], { type: 'text/plain' });
             var url = URL.createObjectURL(blob);
@@ -548,6 +559,8 @@
             d.getElementById('export-starmaker-btn').disabled = true;
             d.getElementById('clear-lrc-btn').disabled = true;
             d.getElementById('lrc-info').style.display = 'none';
+            // Reset file input to allow loading the same file again
+            d.getElementById('lrc-file-input').value = '';
         },
 
         showMessage: function(message, type) {
