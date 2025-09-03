@@ -239,7 +239,7 @@
         },
 
         showHelpModal: function() {
-            d.getElementById('lrc-help-modal').style.display = 'block';
+            d.getElementById('lrc-help-modal').style.display = 'flex';
         },
 
         hideHelpModal: function() {
