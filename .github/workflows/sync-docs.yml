@@ -1,0 +1,32 @@
+name: Sync src to docs
+
+on:
+  push:
+    branches: [ production ]
+    paths:
+      - 'src/**'
+      - '.github/workflows/sync-docs.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Mirror src → docs (delete removed files)
+        run: |
+          rsync -av --delete src/ docs/
+
+      - name: Ensure .nojekyll exists
+        run: |
+          touch docs/.nojekyll
+
+      - name: Commit changes to docs
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Sync docs from src"
+          file_pattern: docs/**
