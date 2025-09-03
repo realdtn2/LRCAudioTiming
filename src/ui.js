@@ -2511,6 +2511,10 @@
 
 		var timingspan = d.createElement( 'span' );
 
+		// Treat Electron as non-Chrome to avoid canvas rendering issues on some platforms
+		var is_electron = /Electron/i.test(navigator.userAgent || '');
+		var is_chrome = !!window.chrome && !is_electron;
+
 		if (!is_chrome)
 		{
 			timingspan.textContent = '00:00:000';
