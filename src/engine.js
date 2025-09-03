@@ -147,12 +147,45 @@
 		this.LoadFile = function ( e ) {
 			if (e.files.length > 0)
 			{
-				if (e.files[0].type == "audio/mp3"
-					|| e.files[0].type == "audio/wave"
-					|| e.files[0].type == "audio/mpeg"
-					|| e.files[0].type == "audio/aiff"
-					|| e.files[0].type == "audio/flac"
-					|| e.files[0].type == "audio/ogg")
+				var file = e.files[0];
+				var fileType = file.type;
+				
+				// Handle file path from Electron
+				if (file.path && !fileType) {
+					var extension = file.path.toLowerCase().split('.').pop();
+					switch(extension) {
+						case 'mp3':
+						case 'mpeg':
+							fileType = 'audio/mp3';
+							break;
+						case 'wav':
+							fileType = 'audio/wave';
+							break;
+						case 'flac':
+							fileType = 'audio/flac';
+							break;
+						case 'ogg':
+							fileType = 'audio/ogg';
+							break;
+						case 'aiff':
+						case 'aif':
+							fileType = 'audio/aiff';
+							break;
+						case 'm4a':
+							fileType = 'audio/mp4';
+							break;
+						default:
+							fileType = 'audio/mp3'; // Default fallback
+					}
+				}
+				
+				if (fileType == "audio/mp3"
+					|| fileType == "audio/wave"
+					|| fileType == "audio/mpeg"
+					|| fileType == "audio/aiff"
+					|| fileType == "audio/flac"
+					|| fileType == "audio/ogg"
+					|| fileType == "audio/mp4")
 				{
 
 							var func = function () {
@@ -172,7 +205,16 @@
 
 									app.fireEvent ('WillDownloadFile');
 									q.is_ready = false;
-									wavesurfer.loadBlob( e.files[0] );
+									
+									// Handle file loading for Electron vs browser
+									if (file.path && typeof window.electronAPI !== 'undefined') {
+										// For Electron, load from file path
+										wavesurfer.load(file.path);
+									} else {
+										// For browser, load from blob
+										wavesurfer.loadBlob(file);
+									}
+									
 									app.fireEvent ('DidUnloadFile');
 									wavesurfer.regions && wavesurfer.regions.clear();
 							};
@@ -704,26 +746,47 @@
 			app.listenFor ('RequestLoadLocalFile', function () {
 					wavesurfer.pause();
 					
-					if (input)
-					{
-						input.parentNode.removeChild( input );
-						input.onchange = null;
+					// Check if we're running in Electron
+					if (typeof window.electronAPI !== 'undefined') {
+						// Use Electron's file dialog
+						window.electronAPI.openFile().then(function(filePath) {
+							if (filePath) {
+								// Create a fake file input object for compatibility
+								var fakeInput = {
+									files: [{
+										path: filePath,
+										name: filePath.split('/').pop().split('\\').pop(),
+										type: 'audio/mp3' // Default type, will be handled by LoadFile
+									}]
+								};
+								q.LoadFile(fakeInput);
+							}
+						}).catch(function(error) {
+							console.error('Error opening file:', error);
+						});
+					} else {
+						// Fallback to browser file input
+						if (input)
+						{
+							input.parentNode.removeChild( input );
+							input.onchange = null;
+						}
+
+						input = d.createElement( 'input' );
+						input.setAttribute ('type', 'file');
+						input.setAttribute ('accept', 'audio/*');
+						input.className = 'pk_inpfile';
+						input.onchange = function () {
+							q.LoadFile ( input );
+
+							input.parentNode.removeChild( input );
+							input.onchange = null;
+							input = null;
+						};
+						app.el.appendChild ( input );
+
+						input.click ();
 					}
-
-					input = d.createElement( 'input' );
-					input.setAttribute ('type', 'file');
-					input.setAttribute ('accept', 'audio/*');
-					input.className = 'pk_inpfile';
-					input.onchange = function () {
-						q.LoadFile ( input );
-
-						input.parentNode.removeChild( input );
-						input.onchange = null;
-						input = null;
-					};
-					app.el.appendChild ( input ); // maybe not append?
-
-					input.click ();
 			});
 		})();
 		
